@@ -47,6 +47,11 @@ export async function ensureSchema() {
   `;
 
   await sql`
+    ALTER TABLE tasks
+    ADD COLUMN IF NOT EXISTS task_type TEXT NOT NULL DEFAULT 'Otros'
+  `;
+
+  await sql`
     CREATE TABLE IF NOT EXISTS notes (
       id TEXT PRIMARY KEY,
       user_email TEXT NOT NULL,

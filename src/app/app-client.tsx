@@ -1,9 +1,10 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import type { BoardData, ShoppingItem, Task, TaskStatus, Urgency } from "@/lib/types";
+import type { BoardData, ShoppingItem, Task, TaskStatus, TaskType, Urgency } from "@/lib/types";
 
 const DAY = 24 * 60 * 60 * 1000;
+const TASK_TYPES: TaskType[] = ["Personal", "Carmen", "Ambos", "Casa", "Otros"];
 
 type Props = {
   userEmail: string;
@@ -158,15 +159,17 @@ function TaskPanel({
 }) {
   const [title, setTitle] = useState("");
   const [urgency, setUrgency] = useState<Urgency>("Alta");
+  const [taskType, setTaskType] = useState<TaskType>("Personal");
   const [highPriority, setHighPriority] = useState(false);
   const sortedTasks = useMemo(() => sortTasks(tasks), [tasks]);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (!title.trim()) return;
-    await mutate("createTask", { title, urgency, highPriority });
+    await mutate("createTask", { title, urgency, taskType, highPriority });
     setTitle("");
     setUrgency("Alta");
+    setTaskType("Personal");
     setHighPriority(false);
   }
 
@@ -179,6 +182,13 @@ function TaskPanel({
             <option value="Alta">Alta</option>
             <option value="Media">Media</option>
             <option value="Baja">Baja</option>
+          </select>
+          <select value={taskType} onChange={(event) => setTaskType(event.target.value as TaskType)} aria-label="Tipo de tarea">
+            {TASK_TYPES.map((type) => (
+              <option value={type} key={type}>
+                {type}
+              </option>
+            ))}
           </select>
           <label className="toggle">
             <input checked={highPriority} onChange={(event) => setHighPriority(event.target.checked)} type="checkbox" />
@@ -210,7 +220,14 @@ function TaskCard({
 }) {
   const age = daysSince(task.createdAt);
   const done = Boolean(task.completedAt);
-  const className = ["task-card", "card", !done && age >= 10 ? "danger" : "", !done && age >= 5 && age < 10 ? "warn" : "", done ? "done" : ""]
+  const className = [
+    "task-card",
+    "card",
+    typeClass(task.taskType),
+    !done && age >= 10 ? "danger" : "",
+    !done && age >= 5 && age < 10 ? "warn" : "",
+    done ? "done" : "",
+  ]
     .filter(Boolean)
     .join(" ");
 
@@ -233,6 +250,7 @@ function TaskCard({
     <article className={className}>
       <div className="card-topline">
         <span className="status-pill">{done ? "Completada" : task.status}</span>
+        <span className="type-pill">{task.taskType}</span>
         <span className="age-label">{done ? `hecha hace ${daysSince(task.completedAt!)}d` : `abierta ${age}d`}</span>
       </div>
       <h2>{task.title}</h2>
@@ -247,8 +265,8 @@ function TaskCard({
         <button className="icon-button complete-button" type="button" title="Completar" onClick={complete}>
           ✓
         </button>
-        <button className="icon-button progress-button" type="button" title="Cambiar estado" onClick={progress}>
-          ↻
+        <button className="status-button progress-button" type="button" onClick={progress} disabled={done}>
+          {task.status === "En proceso" ? "Sin empezar" : "En proceso"}
         </button>
         <button className="icon-button event-button" type="button" title={task.googleEventId ?? "Evento pendiente"} disabled>
           ▣
@@ -259,6 +277,10 @@ function TaskCard({
       </div>
     </article>
   );
+}
+
+function typeClass(type: TaskType) {
+  return `type-${type.toLowerCase()}`;
 }
 
 function NotesPanel({

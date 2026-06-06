@@ -228,6 +228,42 @@ h1 {
   box-shadow: var(--shadow);
 }
 
+.task-card {
+  --type-color: #8f8f8f;
+  padding-left: 22px;
+}
+
+.task-card::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: -3px;
+  width: 12px;
+  border-right: 3px solid var(--ink);
+  background: var(--type-color);
+}
+
+.type-personal {
+  --type-color: #2558ff;
+}
+
+.type-carmen {
+  --type-color: #ff5a9d;
+}
+
+.type-ambos {
+  --type-color: #28b475;
+}
+
+.type-casa {
+  --type-color: #ffe45f;
+}
+
+.type-otros {
+  --type-color: #b8a7ff;
+}
+
 .task-card.warn {
   background: var(--yellow);
 }
@@ -244,6 +280,7 @@ h1 {
 
 .card-topline {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 10px;
   align-items: center;
@@ -257,6 +294,13 @@ h1 {
   padding: 4px 7px;
   border: 2px solid var(--ink);
   background: var(--paper);
+}
+
+.type-pill {
+  padding: 4px 7px;
+  border: 2px solid var(--ink);
+  background: var(--type-color);
+  color: var(--ink);
 }
 
 .age-label {
@@ -310,6 +354,26 @@ h1 {
   color: var(--ink);
   font-family: Arial, sans-serif;
   font-weight: 900;
+}
+
+.status-button {
+  display: inline-grid;
+  min-width: 94px;
+  height: 34px;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0 8px;
+  font-family: Arial, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.status-button:disabled {
+  cursor: default;
+  opacity: 0.55;
 }
 
 .icon-button:disabled {
@@ -576,7 +640,7 @@ h1 {
 
   .task-form {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 48px 48px;
+    grid-template-columns: 74px minmax(0, 1fr) 42px 42px;
     align-items: stretch;
   }
 
@@ -664,6 +728,13 @@ h1 {
   .icon-button {
     width: 31px;
     height: 31px;
+  }
+
+  .status-button {
+    min-width: 82px;
+    height: 31px;
+    padding: 0 6px;
+    font-size: 0.6rem;
   }
 
   .shopping-form {

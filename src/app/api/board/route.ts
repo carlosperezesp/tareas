@@ -1,6 +1,6 @@
 import { getSession } from "@/lib/auth";
 import { ensureSchema, getSql } from "@/lib/db";
-import type { BoardData, ShoppingItem, TaskStatus, Urgency } from "@/lib/types";
+import type { BoardData, ShoppingItem, TaskStatus, TaskType, Urgency } from "@/lib/types";
 
 const DEFAULT_CATEGORIES = ["Fruta", "Nevera", "Despensa"];
 
@@ -27,12 +27,13 @@ export async function POST(request: Request) {
   switch (action) {
     case "createTask":
       await sql`
-        INSERT INTO tasks (id, user_email, title, urgency, high_priority, status)
+        INSERT INTO tasks (id, user_email, title, urgency, task_type, high_priority, status)
         VALUES (
           ${crypto.randomUUID()},
           ${session.email},
           ${String(body.title ?? "").trim()},
           ${normalizeUrgency(body.urgency)},
+          ${normalizeTaskType(body.taskType)},
           ${Boolean(body.highPriority)},
           'Sin empezar'
         )
@@ -107,7 +108,7 @@ async function readBoard(email: string): Promise<BoardData> {
   const [taskRows, noteRows, categoryRows, shoppingRows] = await Promise.all([
     sql`
       SELECT
-        id, title, urgency, high_priority, status, created_at, completed_at,
+        id, title, urgency, task_type, high_priority, status, created_at, completed_at,
         event_created, google_event_id
       FROM tasks
       WHERE user_email = ${email}
@@ -140,6 +141,7 @@ async function readBoard(email: string): Promise<BoardData> {
       id: String(task.id),
       title: String(task.title),
       urgency: task.urgency as Urgency,
+      taskType: normalizeTaskType(task.task_type),
       highPriority: Boolean(task.high_priority),
       status: task.status as TaskStatus,
       createdAt: new Date(String(task.created_at)).toISOString(),
@@ -195,6 +197,13 @@ async function cleanupCompletedTasks(email: string) {
 function normalizeUrgency(value: unknown): Urgency {
   if (value === "Alta" || value === "Media" || value === "Baja") return value;
   return "Baja";
+}
+
+function normalizeTaskType(value: unknown): TaskType {
+  if (value === "Personal" || value === "Carmen" || value === "Ambos" || value === "Casa" || value === "Otros") {
+    return value;
+  }
+  return "Otros";
 }
 
 function normalizeStatus(value: unknown): TaskStatus {

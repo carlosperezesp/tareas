@@ -1,10 +1,12 @@
 export type TaskStatus = "Sin empezar" | "En proceso" | "Completada";
 export type Urgency = "Alta" | "Media" | "Baja";
+export type TaskType = "Personal" | "Carmen" | "Ambos" | "Casa" | "Otros";
 
 export type Task = {
   id: string;
   title: string;
   urgency: Urgency;
+  taskType: TaskType;
   highPriority: boolean;
   status: TaskStatus;
   createdAt: string;
