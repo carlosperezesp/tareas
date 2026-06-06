@@ -606,32 +606,40 @@ h1 {
 @media (max-width: 760px) {
   .app-shell {
     width: 100%;
-    padding: 12px 10px 28px;
+    padding: 10px 12px 28px;
     overflow: hidden;
   }
 
   .masthead {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 8px;
     align-items: start;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
     border-bottom-width: 4px;
   }
 
   .kicker {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
   }
 
   h1 {
-    font-size: clamp(3.25rem, 19vw, 5.2rem);
-    line-height: 0.78;
+    font-size: clamp(2.75rem, 15vw, 4.3rem);
+    line-height: 0.84;
   }
 
   .date-plate {
     width: 100%;
     min-width: 0;
-    padding: 8px;
+    padding: 8px 10px;
     box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  .date-plate span {
+    font-size: 0.66rem;
+  }
+
+  .date-plate strong {
+    font-size: 1rem;
   }
 
   .tabs {
@@ -639,7 +647,7 @@ h1 {
     top: 0;
     z-index: 5;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin: 10px 0 12px;
+    margin: 8px 0 10px;
     border-width: 2px;
     gap: 2px;
   }
@@ -652,8 +660,8 @@ h1 {
   .app-shell > main {
     display: flex;
     gap: 10px;
-    margin-inline: -10px;
-    padding-inline: 10px;
+    margin-inline: -12px;
+    padding-inline: 12px;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -668,7 +676,7 @@ h1 {
   .panel,
   .panel.is-active {
     display: block;
-    flex: 0 0 calc(100vw - 20px);
+    flex: 0 0 calc(100vw - 24px);
     min-width: 0;
     scroll-snap-align: start;
     scroll-snap-stop: always;
@@ -687,32 +695,27 @@ h1 {
 
   .task-form {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: stretch;
   }
 
-  .task-form input {
-    grid-column: 1 / -1;
-  }
-
-  .task-form .toggle {
+  .task-form input,
+  .task-form select,
+  .task-form .toggle,
+  .task-form button {
     grid-column: 1;
   }
 
+  .task-form .toggle {
+    justify-content: space-between;
+  }
+
   .task-form button {
-    grid-column: 2;
+    font-size: 0.86rem;
   }
 
-  .task-form button,
-  .shopping-form button {
-    font-size: 0;
-  }
-
-  .task-form button::after,
-  .shopping-form button::after {
-    content: "+";
-    font-size: 1.25rem;
-    line-height: 1;
+  .task-form button::after {
+    content: "";
   }
 
   .task-form .toggle span {
@@ -720,7 +723,6 @@ h1 {
   }
 
   .task-form .toggle {
-    justify-content: center;
     padding: 0 8px;
   }
 
@@ -749,17 +751,18 @@ h1 {
   .entry-form select,
   .toggle {
     width: 100%;
-    min-height: 38px;
+    min-height: 42px;
   }
 
   .entry-form input {
     flex: 0 0 auto;
     min-width: 0;
     padding-inline: 9px;
+    font-size: 0.95rem;
   }
 
   .entry-form select {
-    padding-inline: 6px;
+    padding-inline: 9px;
     font-size: 0.84rem;
   }
 
@@ -767,13 +770,13 @@ h1 {
   .secondary-action {
     padding: 0 8px;
     box-shadow: 3px 3px 0 var(--ink);
-    font-size: 0.78rem;
+    font-size: 0.82rem;
   }
 
   .secondary-action {
-    justify-self: start;
-    width: auto;
-    min-height: 38px;
+    justify-self: stretch;
+    width: 100%;
+    min-height: 42px;
   }
 
   .card-grid {
@@ -819,21 +822,28 @@ h1 {
 
   .shopping-form {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 112px 42px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shopping-form button {
+    font-size: 0.86rem;
+  }
+
+  .shopping-form button::after {
+    content: "";
   }
 
   .category-form {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 82px;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .category-form button {
-    font-size: 0;
+    font-size: 0.86rem;
   }
 
   .category-form button::after {
-    content: "Crear";
-    font-size: 0.76rem;
+    content: "";
   }
 
   .shop-grid {
