@@ -218,6 +218,11 @@ function TaskCard({
   task: Task;
   mutate: (action: string, payload?: Record<string, unknown>) => Promise<void>;
 }) {
+  const [editing, setEditing] = useState(false);
+  const [draftTitle, setDraftTitle] = useState(task.title);
+  const [draftUrgency, setDraftUrgency] = useState<Urgency>(task.urgency);
+  const [draftType, setDraftType] = useState<TaskType>(task.taskType);
+  const [draftHighPriority, setDraftHighPriority] = useState(task.highPriority);
   const age = daysSince(task.createdAt);
   const done = Boolean(task.completedAt);
   const className = [
@@ -246,6 +251,27 @@ function TaskCard({
     await mutate("updateTask", { id: task.id, status, completedAt: null });
   }
 
+  async function saveEdit(event: FormEvent) {
+    event.preventDefault();
+    if (!draftTitle.trim()) return;
+    await mutate("editTask", {
+      id: task.id,
+      title: draftTitle,
+      urgency: draftUrgency,
+      taskType: draftType,
+      highPriority: draftHighPriority,
+    });
+    setEditing(false);
+  }
+
+  function cancelEdit() {
+    setDraftTitle(task.title);
+    setDraftUrgency(task.urgency);
+    setDraftType(task.taskType);
+    setDraftHighPriority(task.highPriority);
+    setEditing(false);
+  }
+
   return (
     <article className={className}>
       <div className="card-topline">
@@ -253,17 +279,58 @@ function TaskCard({
         <span className="type-pill">{task.taskType}</span>
         <span className="age-label">{done ? `hecha hace ${daysSince(task.completedAt!)}d` : `abierta ${age}d`}</span>
       </div>
-      <h2>{task.title}</h2>
-      <div className="danger-row" aria-label="Prioridad">
-        {Array.from({ length: priorityLevel(task) }).map((_, index) => (
-          <span className="danger-mark" key={index}>
-            !
-          </span>
-        ))}
-      </div>
+      {editing ? (
+        <form className="edit-task-form" onSubmit={saveEdit}>
+          <input value={draftTitle} onChange={(event) => setDraftTitle(event.target.value)} aria-label="Titulo de tarea" required />
+          <div className="edit-task-row">
+            <select value={draftUrgency} onChange={(event) => setDraftUrgency(event.target.value as Urgency)} aria-label="Urgencia">
+              <option value="Alta">Alta</option>
+              <option value="Media">Media</option>
+              <option value="Baja">Baja</option>
+            </select>
+            <select value={draftType} onChange={(event) => setDraftType(event.target.value as TaskType)} aria-label="Tipo de tarea">
+              {TASK_TYPES.map((type) => (
+                <option value={type} key={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+            <label className="mini-toggle">
+              <input
+                checked={draftHighPriority}
+                onChange={(event) => setDraftHighPriority(event.target.checked)}
+                type="checkbox"
+              />
+              <span>Alta prioridad</span>
+            </label>
+          </div>
+          <div className="edit-actions">
+            <button className="status-button" type="submit">
+              Guardar
+            </button>
+            <button className="status-button" type="button" onClick={cancelEdit}>
+              Cancelar
+            </button>
+          </div>
+        </form>
+      ) : (
+        <>
+          <h2>{task.title}</h2>
+          <div className="danger-row" aria-label="Prioridad">
+            {Array.from({ length: priorityLevel(task) }).map((_, index) => (
+              <span className="danger-mark" key={index}>
+                !
+              </span>
+            ))}
+          </div>
+        </>
+      )}
       <div className="card-actions">
         <button className="icon-button complete-button" type="button" title="Completar" onClick={complete}>
           ✓
+        </button>
+        <button className="icon-button edit-button" type="button" title="Editar" onClick={() => setEditing((value) => !value)}>
+          ✎
         </button>
         <button className="status-button progress-button" type="button" onClick={progress} disabled={done}>
           {task.status === "En proceso" ? "Sin empezar" : "En proceso"}

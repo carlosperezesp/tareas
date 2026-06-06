@@ -49,6 +49,17 @@ export async function POST(request: Request) {
       `;
       break;
 
+    case "editTask":
+      await sql`
+        UPDATE tasks SET
+          title = ${String(body.title ?? "").trim()},
+          urgency = ${normalizeUrgency(body.urgency)},
+          task_type = ${normalizeTaskType(body.taskType)},
+          high_priority = ${Boolean(body.highPriority)}
+        WHERE id = ${String(body.id)} AND user_email = ${session.email}
+      `;
+      break;
+
     case "deleteTask":
       await sql`DELETE FROM tasks WHERE id = ${String(body.id)} AND user_email = ${session.email}`;
       break;
