@@ -687,12 +687,20 @@ h1 {
 
   .task-form {
     display: grid;
-    grid-template-columns: 74px minmax(0, 1fr) 42px 42px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: stretch;
   }
 
   .task-form input {
     grid-column: 1 / -1;
+  }
+
+  .task-form .toggle {
+    grid-column: 1;
+  }
+
+  .task-form button {
+    grid-column: 2;
   }
 
   .task-form button,
@@ -708,19 +716,31 @@ h1 {
   }
 
   .task-form .toggle span {
-    display: none;
+    display: inline;
   }
 
   .task-form .toggle {
     justify-content: center;
-    padding: 0;
+    padding: 0 8px;
   }
 
   .task-form .toggle::after {
     content: "!";
+    display: inline-grid;
+    width: 20px;
+    height: 20px;
+    place-items: center;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--white);
     font-family: Arial, sans-serif;
-    font-size: 1rem;
+    font-size: 0.82rem;
     font-weight: 900;
+    opacity: 0.25;
+  }
+
+  .task-form .toggle:has(input:checked)::after {
+    opacity: 1;
   }
 
   .entry-form button,
