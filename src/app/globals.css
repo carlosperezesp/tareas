@@ -710,6 +710,14 @@ h1 {
     justify-content: space-between;
   }
 
+  .task-form .toggle input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .task-form button {
     font-size: 0.86rem;
   }
