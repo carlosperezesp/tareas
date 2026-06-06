@@ -9,11 +9,18 @@ DATABASE_URL=
 AUTH_SECRET=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
+CRON_SECRET=
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 APP_TIME_ZONE=Europe/Amsterdam
 ```
 
 Puedes generar `AUTH_SECRET` con:
+
+```bash
+openssl rand -base64 32
+```
+
+Puedes generar `CRON_SECRET` igual:
 
 ```bash
 openssl rand -base64 32
@@ -54,8 +61,9 @@ La app crea las tablas automaticamente la primera vez que se abre con `DATABASE_
 1. Crea/importa el proyecto en Vercel desde este directorio o desde un repo Git.
 2. Anade Neon Postgres desde Vercel Marketplace y copia `DATABASE_URL` a las variables del proyecto.
 3. Anade las variables de Google y `AUTH_SECRET`.
-4. Actualiza `NEXT_PUBLIC_APP_URL` con la URL final de Vercel.
-5. En Google Cloud, anade tambien el redirect URI final:
+4. Anade `CRON_SECRET` para proteger la tarea programada.
+5. Actualiza `NEXT_PUBLIC_APP_URL` con la URL final de Vercel.
+6. En Google Cloud, anade tambien el redirect URI final:
 
 ```txt
 https://TU-DOMINIO.vercel.app/api/auth/callback/google
@@ -68,3 +76,9 @@ npm install
 npm run build
 vercel deploy --prod
 ```
+
+## Planificacion automatica
+
+Vercel ejecuta `/api/cron/plan-google` los lunes y viernes a `01:00 UTC`, que equivale a `03:00` en Amsterdam durante horario de verano. Vercel Cron usa UTC.
+
+El boton manual `Plan Google` sigue funcionando igual.
